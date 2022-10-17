@@ -1,13 +1,22 @@
-import type { AppProps } from 'next/app';
-import { NextPageWithLayout } from './page';
+import { CacheProvider } from '@emotion/react';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import '../styles/globals.css';
+import lightTheme from '../styles/theme/lightTheme';
+import createEmotionCache from '../utils/createEmotionCache';
 
-interface AppPropsWithLayout extends AppProps {
-  Component: NextPageWithLayout;
-}
+const clientSideEmotionCache = createEmotionCache();
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const getLayout = Component.getLayout || ((page) => page);
+const MyApp = (props: any) => {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  return getLayout(<Component {...pageProps} />);
-}
+  return (
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider theme={lightTheme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </CacheProvider>
+  );
+};
+
 export default MyApp;
